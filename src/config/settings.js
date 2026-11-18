@@ -157,6 +157,42 @@ export const settings = {
   },
 
   /* ------------------------------------------------------------------ */
+  /* Force mode — lift rocks by focusing (see force/)                    */
+  /* ------------------------------------------------------------------ */
+  force: {
+    /* --- signal → power (force/FocusModel.js) --- */
+    eegSource: 'sim', // 'sim' (hold Space) or 'muse' (NeuroSkill daemon)
+    calibrationSeconds: 15, // resting baseline recorded at the start of a session
+    threshold: 0.6, // z-score above your baseline where lifting starts
+    range: 1.6, // z-score span from "starts to lift" to full power
+    riseTau: 0.7,
+    fallTau: 1.4,
+    minStillness: 35, // head moving more than this = samples ignored
+    hrRange: 15, // bpm above resting that fully shakes the rock
+    requireOpenPalm: true, // with the camera on, only an open palm channels power
+
+    /* --- the rocks --- */
+    liftHeight: 3.2, // metres at full power
+    stiffness: 18, // spring pulling the held rock to its height
+    damping: 5.5,
+    wobble: 0.35, // metres of shake when calm reaches 0
+    spin: 0.35, // slow tumble while floating, rad/s
+
+    /* --- trials --- */
+    goalHeight: 1.4, // first trial: hold the rock in the ring
+    goalStep: 0.45, // each passed trial raises the ring
+    goalBand: 0.35, // ± metres that counts as "in the ring"
+    goalHold: 4, // seconds to hold
+
+    /* --- look --- */
+    auraColor: '#8fd8ff',
+    lightIntensity: 7,
+    lightRadius: 6,
+    dustRate: 160,
+    landShake: 0.4
+  },
+
+  /* ------------------------------------------------------------------ */
   /* Camera rig                                                          */
   /* ------------------------------------------------------------------ */
   camera: {
@@ -558,12 +594,13 @@ export const settings = {
 export const ELEMENTS = ['fire', 'water', 'earth', 'wind'];
 
 /** Interaction modes, in toggle order (key M). */
-export const MODES = ['casting', 'walk'];
+export const MODES = ['casting', 'walk', 'force'];
 
 /** Presentation metadata for the HUD's mode switch. */
 export const MODE_META = {
   casting: { label: 'Cast', glyph: '✦', hint: 'Casting mode', blurb: 'Draw a path. Release to cast.' },
-  walk: { label: 'Walk', glyph: '◎', hint: 'Walk mode', blurb: 'Draw a path. Release to ride it.' }
+  walk: { label: 'Walk', glyph: '◎', hint: 'Walk mode', blurb: 'Draw a path. Release to ride it.' },
+  force: { label: 'Force', glyph: '◉', hint: 'Force mode', blurb: 'Point at a rock. Focus to lift it.' }
 };
 
 /** Presentation metadata for the HUD. */

@@ -41,7 +41,7 @@ export class HUD {
           <kbd>Q</kbd><kbd>E</kbd> cycle
         </div>
         <div><kbd>G</kbd> editor &nbsp; <kbd>C</kbd> clear &nbsp; <kbd>P</kbd> pause &nbsp; <kbd>H</kbd> hide</div>
-        <div><kbd>T</kbd> sit / stand &nbsp; <kbd>M</kbd> cast / walk</div>
+        <div><kbd>T</kbd> sit / stand &nbsp; <kbd>M</kbd> cast / walk / force</div>
       </div>
 
       <div class="hud__modes">

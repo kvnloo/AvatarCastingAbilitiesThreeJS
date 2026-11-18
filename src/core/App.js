@@ -25,6 +25,8 @@ import { CameraShake } from '../effects/CameraShake.js';
 import { ScreenFlash } from '../effects/ScreenFlash.js';
 
 import { AbilityManager } from '../abilities/AbilityManager.js';
+import { ForceTrainer } from '../force/ForceTrainer.js';
+import { ForceHUD } from '../force/ForceHUD.js';
 import { PostProcessing } from '../postprocessing/PostProcessing.js';
 
 import { HUD, LoadingScreen } from '../ui/HUD.js';
@@ -115,6 +117,23 @@ export class App {
       onToast: (message) => this.hud.showToast(message)
     });
 
+    // Force mode: focus (EEG), calm (heart rate) and aim (camera) lift stones.
+    this.force = new ForceTrainer({
+      scene: this.scene,
+      camera: this.camera,
+      environment: this.environment,
+      particles: this.particles,
+      lights: this.lights,
+      decals: this.decals,
+      bursts: this.bursts,
+      shake: this.shake,
+      flash: this.flash,
+      input: this.input,
+      character: this.character,
+      toast: (message) => this.hud.showToast(message)
+    });
+    this.forceHud = new ForceHUD(document.getElementById('hud'), this.force);
+
     this._bindEvents();
     this._mode = null;
     this.setMode(settings.mode);
@@ -132,7 +151,8 @@ export class App {
       this.dust.setPixelRatio(pixelRatio);
     });
 
-    this.input.on('draw:start', (pointer) => this.pathDrawer.begin(pointer));
+    // Force mode has no strokes: the pointer only aims.
+    this.input.on('draw:start', (pointer) => settings.mode !== 'force' && this.pathDrawer.begin(pointer));
     this.input.on('draw:move', (pointer) => this.pathDrawer.move(pointer));
     this.input.on('draw:end', () => this.pathDrawer.end());
 
@@ -181,6 +201,9 @@ export class App {
         this.hud.showToast(pose === 'sitting' ? 'Meditation pose' : 'Standing idle');
         break;
       }
+      case 'recalibrate':
+        if (settings.mode === 'force') this.force.recalibrate();
+        break;
       case 'toggleMode':
         this.setMode(MODES[(MODES.indexOf(settings.mode) + 1) % MODES.length]);
         break;
@@ -209,6 +232,8 @@ export class App {
     settings.mode = next;
 
     if (next !== 'walk') this.walk.cancel();
+    this.force.setActive(next === 'force');
+    this.forceHud.show(next === 'force');
     this.hud.setMode(next);
     if (changed) this.hud.showToast(`${MODE_META[next].hint} — ${MODE_META[next].blurb}`);
     this.editor.refresh();
@@ -216,6 +241,7 @@ export class App {
 
   clearEffects() {
     this.walk.cancel();
+    this.force.reset();
     this.abilities.clear();
     this.particles.reset();
     this.decals.clear();
@@ -297,6 +323,7 @@ export class App {
 
     this.pathDrawer.update(raw); // the preview keeps animating while paused
     this.abilities.update(dt);
+    this.force.update(dt, this.elapsed);
     this.particles.flush();
     this.decals.update(dt);
     this.bursts.update(dt);
@@ -319,6 +346,7 @@ export class App {
     this.post.sync(this.elapsed, this.flash);
     this.post.render();
 
+    this.forceHud.update();
     this.hud.update(raw, () => ({
       particles: this.particles.countLive(this.elapsed),
       calls: gl.info.render.calls,
@@ -338,6 +366,7 @@ export class App {
     this.bursts.dispose();
     this.lights.dispose();
     this.walk.dispose();
+    this.force.dispose();
     this.character.dispose();
     this.ground.dispose();
     this.dust.dispose();

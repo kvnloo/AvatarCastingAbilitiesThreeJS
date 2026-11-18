@@ -33,6 +33,7 @@ export class Editor {
     this._buildCamera();
     this._buildCharacter();
     this._buildWalk();
+    this._buildForce();
 
     // Element folders start closed — the global block is the common entry point.
     this.gui.folders.forEach((folder) => folder.close());
@@ -674,6 +675,37 @@ export class Editor {
     debris.addColor(c, 'lightColor').name('light colour');
 
     this.walkFolder = folder;
+  }
+
+  _buildForce() {
+    const folder = this.gui.addFolder('◉  Force mode');
+    const c = settings.force;
+    const R = Editor.range;
+
+    folder.add(c, 'eegSource', ['sim', 'muse']).name('EEG source');
+    const signal = folder.addFolder('Focus → power');
+    R(signal, c, 'calibrationSeconds', 3, 60, 1, 'calibration (s)');
+    R(signal, c, 'threshold', -1, 3, 0.05, 'lift threshold (z)');
+    R(signal, c, 'range', 0.2, 4, 0.05, 'z to full power');
+    R(signal, c, 'riseTau', 0.05, 3, 0.05, 'rise time');
+    R(signal, c, 'fallTau', 0.05, 5, 0.05, 'fall time');
+    R(signal, c, 'minStillness', 0, 100, 1, 'min head stillness');
+    R(signal, c, 'hrRange', 3, 40, 1, 'HR over rest to full shake');
+    signal.add(c, 'requireOpenPalm').name('camera: open palm only');
+
+    const rocks = folder.addFolder('Stones & trials');
+    R(rocks, c, 'liftHeight', 0.5, 8, 0.05, 'lift height');
+    R(rocks, c, 'stiffness', 1, 60, 0.5, 'stiffness');
+    R(rocks, c, 'damping', 0, 20, 0.1, 'damping');
+    R(rocks, c, 'wobble', 0, 1.5, 0.01, 'stress wobble');
+    R(rocks, c, 'spin', 0, 3, 0.01, 'tumble');
+    R(rocks, c, 'goalHeight', 0.3, 6, 0.05, 'first ring height');
+    R(rocks, c, 'goalStep', 0, 2, 0.05, 'ring step / level');
+    R(rocks, c, 'goalBand', 0.05, 1.5, 0.01, 'ring tolerance');
+    R(rocks, c, 'goalHold', 0.5, 20, 0.5, 'hold time');
+    rocks.addColor(c, 'auraColor').name('aura colour');
+    R(rocks, c, 'lightIntensity', 0, 40, 0.1, 'light intensity');
+    R(rocks, c, 'dustRate', 0, 600, 1, 'dust rate');
   }
 
   dispose() {

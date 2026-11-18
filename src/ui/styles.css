@@ -433,3 +433,40 @@ body {
     padding: 6px 12px;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Force mode panel (src/force/ForceHUD.js)                            */
+/* ------------------------------------------------------------------ */
+.force-panel {
+  left: 22px;
+  top: 100px;
+  width: 270px;
+  color: var(--ui-text-dim);
+  transition: opacity 0.3s ease;
+}
+.force-panel.is-hidden { opacity: 0; pointer-events: none; }
+.force-panel__title {
+  letter-spacing: 0.2em; text-transform: uppercase; font-size: 11px; font-weight: 600; color: var(--ui-text);
+}
+.force-panel__title span { letter-spacing: 0.05em; text-transform: none; color: #8fd8ff; }
+.force-panel__status { margin: 4px 0 8px; color: var(--ui-text); min-height: 1.6em; }
+.force-panel__status[data-phase='calibrating'] { color: #ffd27a; }
+.force-meter { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; }
+.force-meter i { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.force-meter b { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #4aa8ff, #bff0ff); box-shadow: 0 0 10px #8fd8ff; }
+.force-panel__rows { margin-top: 8px; border-top: 1px solid var(--ui-border); padding-top: 6px; font-size: 11px; }
+.force-panel__rows > div { display: flex; gap: 6px; align-items: center; justify-content: space-between; }
+.force-panel__rows b { flex: 1; color: var(--ui-text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.force-panel__rows button, .force-panel__rows input {
+  font: 10px var(--ui-font); color: var(--ui-text); background: rgba(255,255,255,0.07);
+  border: 1px solid var(--ui-border); border-radius: 5px; padding: 1px 6px; cursor: pointer;
+}
+.force-panel__rows input { width: 52px; cursor: text; }
+.force-panel__hint { margin-top: 6px; font-size: 10px; }
+.force-panel__hint kbd {
+  padding: 0 4px; border: 1px solid var(--ui-border); border-radius: 4px; font: 10px var(--ui-font); color: var(--ui-text);
+}
+.force-cam {
+  position: fixed; left: 310px; top: 100px; width: 160px; transform: scaleX(-1);
+  border-radius: 10px; border: 1px solid var(--ui-border); opacity: 0.85;
+}

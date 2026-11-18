@@ -105,6 +105,12 @@ export class InputManager extends EventEmitter {
       case 'KeyM':
         this.emit('action', 'toggleMode');
         break;
+      case 'KeyR':
+        this.emit('action', 'recalibrate');
+        break;
+      case 'Space':
+        event.preventDefault(); // held for simulated focus in force mode
+        break;
       default:
         break;
     }
